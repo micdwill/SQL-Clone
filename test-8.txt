@@ -1,0 +1,99 @@
+CREATE dogs 4 string bool int double name is_cute age cost
+INSERT INTO dogs 20 ROWS
+Labrador true 5 500.00
+Golden_Retriever true 4 600.00
+German_Shepherd false 3 700.00
+Poodle true 2 800.00
+Bulldog false 4 900.00
+Beagle true 3 400.00
+Yorkshire_Terrier true 2 300.00
+Boxer false 3 750.00
+Siberian_Husky true 4 1000.00
+Dachshund true 3 450.00
+Doberman false 5 850.00
+Shih_Tzu true 2 350.00
+Great_Dane false 4 1200.00
+Pomeranian true 2 250.00
+Chihuahua true 1 200.00
+Sphynx false 5 950.00
+Australian_Shepherd true 4 850.00
+Shetland_Sheepdog true 3 400.00
+Border_Collie true 2 600.00
+Saint_Bernard false 5 1100.00
+CREATE cats 4 string double bool int name cost is_annoying age
+INSERT INTO cats 20 ROWS
+Siamese 500.00 true 4
+Persian 400.00 false 3
+Maine_Coon 700.00 true 2
+Ragdoll 800.00 false 5
+Bengal 1200.00 true 4
+Sphynx 400.00 false 3
+British_Shorthair 300.00 true 2
+Scottish_Fold 750.00 false 4
+Russian_Blue 1000.00 true 5
+Abyssinian 450.00 false 3
+Burmese 850.00 true 5
+Norwegian_Forest_Cat 350.00 false 4
+Exotic_Shorthair 1200.00 true 2
+Oriental 250.00 false 3
+Devon_Rex 200.00 true 1
+Manx 950.00 false 4
+American_Shorthair 850.00 true 3
+Himalayan 400.00 false 2
+Tonkinese 600.00 true 4
+Turkish_Van 1100.00 false 5
+CREATE dogs2 4 string bool int double name is_cute age cost
+INSERT INTO dogs2 20 ROWS
+Labrador true 2 550.00
+Golden_Retriever false 4 650.00
+German_Shepherd false 3 700.00
+Poodle true 2 800.00
+Bulldog false 4 900.00
+Beagle true 3 400.00
+Yorkshire_Terrier false 6 300.00
+Boxer false 3 750.00
+Siberian_Husky true 4 500.0
+Dachshund true 3 450.00
+Doberman false 5 850.00
+Shih_Tzu false 2 350.00
+Great_Dane false 6 1260.00
+Pomeranian true 2 250.00
+Chihuahua true 6 400.00
+Rottweiler true 5 980.00
+Australian_Shepherd true 4 850.00
+Shetland_Sheepdog true 3 400.00
+Border_Collie false 1 680.00
+Saint_Bernard false 5 1100.00
+GENERATE FOR dogs bst INDEX ON price
+JOIN dogs and cats WHERE cost = cost AND PRINT 3 is_cute 1 cost 1 cost 2
+JOIN cats and dogs WHERE cost = cost AND PRINT 3 is_cute 2 cost 1 cost 2
+GENERATE FOR cats hash INDEX ON age
+GENREATE FOR dogs2 bst INDEX ON age
+PRINT FROM cats 2 cost name WHERE age > 2
+PRINT FROM cats 2 cost name WHERE age = 2
+DELETE FROM cats WHERE age = 4
+PRINT FROM cats 1 name WHERE age = 4
+PRINT FROM dogs2 2 name cost WHERE age > 3
+PRINT FROM dogs2 2 name cost WHERE age = 3
+DELETE FROM dogs2 WHERE age > 4
+DELETE FROM dogs2 WHERE age = 2
+PRINT FROM dogs2 1 name WHERE age > 0
+JOIN dogs and dogs2 WHERE age = age AND PRINT 2 is_cute 1 name 2
+JOIN dogs2 and dogs WHERE price = price AND PRINT 3 name 1 name 2 age 2
+INSERT INTO dogs2 2 ROWS
+husky true 2 1000.50
+pom true 4 600.00
+PRINT FROM dogs2 1 name WHERE age > 3
+GENERATE FOR dogs2 hash index on is_cute
+DELETE FROM dogs2 WHERE price < 600.00
+PRINT FROM dogs2 1 name WHERE is_cute = false
+JOIN cats and dogs2 WHERE is_annoying = is_cute AND PRINT 2 name 1 name 2
+GENERATE FOR cats bst index on name
+JOIN dogs and cats WHERE name = name AND PRINT 2 name 2 name 1
+PRINT FROM cats 1 name WHERE name > guy
+INSERT INTO cats 2 ROWS
+cutie 900.00 true 3
+zephy 705.00 false 5
+DELETE FROM cats WHERE is_annoying = false
+PRINT FROM cats 1 name WHERE name < weed
+QUIT
