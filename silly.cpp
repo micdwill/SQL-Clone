@@ -1,7 +1,6 @@
 // Project Identifier: C0F4DFE8B340D81183C208F70F9D2D797908754D
 
 #include "TableEntry.h"
-
 #include <functional>
 #include <cassert>
 #include <iostream>
@@ -27,6 +26,7 @@
 
 using namespace std;
 
+// For input into table
 enum class TableType {
     STRING,
     DOUBLE,
@@ -34,7 +34,7 @@ enum class TableType {
     BOOL
 };
 
-
+// For finding rows with a greater value in a column
 struct greaterFunctor {
 
     size_t column;
@@ -45,6 +45,7 @@ struct greaterFunctor {
     }
 };
 
+// For finding rows with a lower value in a column
 struct lessFunctor {
 
     size_t column;
@@ -55,6 +56,7 @@ struct lessFunctor {
     }
 };
 
+// For finding rows with an equivalent value in a column
 struct equalFunctor {
 
     size_t column;
@@ -65,7 +67,7 @@ struct equalFunctor {
     }
 };
 
-
+// Keeps track of a table
 struct Table {
     vector<vector<TableEntry>> entries;
     vector<pair<TableType, string>> colNames;
@@ -76,19 +78,21 @@ struct Table {
     bool isBst;
 };
 
-
+// All tables
 class Nincompoop {
 
     private:
-
+    // Name to table
     unordered_map<string, Table> ht;
 
+    // For when joi is used
     unordered_map<TableEntry, vector<size_t>> joinHash;
 
     vector<pair<size_t, bool>> joinCols;
 
     vector<size_t> colsUsed;
 
+    // Various purposes throuhgout
     string cmd;
     string word;
     string type;
@@ -116,6 +120,7 @@ class Nincompoop {
 
     public:
 
+    // Take in arguments
     void readInTheArgs(int argc, char** argv) {
         int option_index = 0, option = 0;
     
@@ -139,6 +144,7 @@ class Nincompoop {
         }
     }
 
+    // Create a table
     void create() {
         cin >> word;
         auto dude = ht.find(word);
@@ -151,7 +157,7 @@ class Nincompoop {
 
         cin >> amount;
         vector<pair<TableType, string>> columns(amount);
-
+        // Read in table elements
         for (size_t i = 0; i < amount; i++) {
             cin >> type;
             if (type == "int") {
@@ -179,13 +185,13 @@ class Nincompoop {
         cout << "created\n";
 
         vector<vector<TableEntry>> entries;
-
+        // Place table into hash
         ht[word] = {entries, columns, {}, {}, -1, false};
 
     }
         
 
-
+    // For when the game ends
     void quit() {
         auto it = ht.begin();
         while (it != ht.end()) {
@@ -197,6 +203,7 @@ class Nincompoop {
         std::cout << "Thanks for being silly!" << std::endl;
     }
 
+    // Helper for deleting a table
     void killTable(unordered_map<string, Table>::iterator &it) {
         it->second.entries.clear();
         it->second.colNames.clear();
@@ -208,6 +215,7 @@ class Nincompoop {
         ht.erase(it);
     }
 
+    // Helper for finding a table
     bool lookForTable(unordered_map<string, Table>::iterator &it, const string &move,
                       const string &wordChose) {
         if (it == ht.end()) {
@@ -219,9 +227,11 @@ class Nincompoop {
         return false;
     }
 
+    // Removes a table
     void remove() {
         cin >> word;
         auto dude = ht.find(word);
+        // Make sure table exists
         if (lookForTable(dude, "REMOVE", word)) return;
 
         killTable(dude);
@@ -229,6 +239,7 @@ class Nincompoop {
         cout << "Table " << word << " removed\n";
     }
 
+    // For adding rows to table
     void insert() {
         cin >> type >> word;
         auto dude = ht.find(word);
@@ -271,6 +282,7 @@ class Nincompoop {
                     }
                 }    
             }
+            // Check for index
             if (dude->second.indexCol != -1) {
                 auto entry = 
                 dude->second.entries[i][static_cast<size_t>(dude->second.indexCol)];
@@ -280,12 +292,14 @@ class Nincompoop {
         }
     }
 
+    // If a column does not exist
     void notACol(const string &move, const string &colName, const string &tableName) {
         cout << "Error during " << move << ": " << colName << 
              " does not name a column in " << tableName << '\n';
         getline(cin, gross);
     }
 
+    // Printing applicable elements
     template<typename Functor>
     void basicPrint(const Functor& functor, unordered_map<string, Table>::iterator &it) {
         for (const auto& row : it->second.entries) {
@@ -309,7 +323,7 @@ class Nincompoop {
     }
 
     
-
+    // For deleting certain rows
     template<typename Functor>
     void deleteStuff(const Functor& functor, 
                           unordered_map<string, Table>::iterator &it) {
@@ -322,7 +336,7 @@ class Nincompoop {
         it->second.entries.erase(removeBegin, it->second.entries.end());     
     }
 
-
+    // Finding rows that are greater
     void greaterBst(const TableEntry& toCompare, 
                     unordered_map<string, Table>::iterator &it) {
         auto search = it->second.bst.upper_bound(toCompare);
@@ -343,6 +357,7 @@ class Nincompoop {
         }
     }
 
+    // Finding rows that are less than
     void lessBst(const TableEntry& toCompare, 
                     unordered_map<string, Table>::iterator &it) {
         auto search = it->second.bst.begin();
@@ -363,6 +378,7 @@ class Nincompoop {
         }
     }
 
+    // Finding rows that are equal with bst index
     void equalBst(const TableEntry& toCompare, 
                     unordered_map<string, Table>::iterator &it) {
         auto search = it->second.bst.find(toCompare);
@@ -383,6 +399,7 @@ class Nincompoop {
         }
     }
 
+    // Finding rows that are equal with hash index
     void equalHash(const TableEntry& toCompare, unordered_map<string, Table>::iterator& it) {
         auto search = it->second.hash.find(toCompare);
         rowsPrinted = 0;
@@ -406,6 +423,7 @@ class Nincompoop {
         }
     }
 
+    // Deleting greater rows
     void greaterBstDelete(const TableEntry& toCompare,
                           unordered_map<string, Table>::iterator& it) {
         size_t deletedCount = 0;
@@ -432,6 +450,7 @@ class Nincompoop {
         cout << "Deleted " << deletedCount << " rows from " << it->first << '\n';
     }
 
+    // Deleting less than rows
     void lessBstDelete(const TableEntry& toCompare,
                      unordered_map<string, Table>::iterator& it) {
         size_t deletedCount = 0;
@@ -457,7 +476,7 @@ class Nincompoop {
         cout << "Deleted " << deletedCount << " rows from " << it->first << '\n';
     }
 
-
+    // Deleting equal to rows with bst index
     void equalBstDelete(const TableEntry& toCompare,
                          unordered_map<string, Table>::iterator& it) {
         size_t deletedCount = 0;
@@ -483,7 +502,7 @@ class Nincompoop {
         cout << "Deleted " << deletedCount << " rows from " << it->first << '\n';
     }
 
-
+    // Deleting equal to rows with hash
     void deleteEqualHash(const TableEntry& toCompare, unordered_map<string, Table>::iterator& it) {
         auto search = it->second.hash.find(toCompare);
         size_t deletedCount = 0;
@@ -510,7 +529,7 @@ class Nincompoop {
 
 
 
-
+    // Calling necessary function based on symbol on index
     template<typename T>
     void compareThem(const T& makeEntry, unordered_map<string, Table>::iterator &it) {
         TableEntry toCompare{makeEntry};
@@ -564,6 +583,7 @@ class Nincompoop {
         }
     }
     
+    // Finding type of Table Type
     void findWhere(unordered_map<string, Table>::iterator &it) {
         switch (it->second.colNames[columnIn].first) {
             case TableType::INT: {
@@ -590,6 +610,7 @@ class Nincompoop {
         }
     }
 
+    // Printing rows based on input
     void print() {
         cin >> type >> word;
         auto dude = ht.find(word);
@@ -672,6 +693,7 @@ class Nincompoop {
 
     }
 
+    // Deleting rows based on input
     void deleteRows() {
         cin >> type >> word;
         auto dude = ht.find(word);
@@ -711,6 +733,7 @@ class Nincompoop {
         }
     }
 
+    // Function for joining tables
     void join() {
         cin >> name;
         auto dude = ht.find(name);
@@ -797,7 +820,7 @@ class Nincompoop {
         }
         
 
-
+        // Make an index for efficient join
         if (dude->second.colNames[columnIn].first == 
             dude2->second.colNames[columnIn2].first) {   
 
@@ -851,6 +874,7 @@ class Nincompoop {
 
     }
 
+    // Outputting when joining
     void joinOutput(const size_t& number1, const size_t& number2,
                     unordered_map<string, Table>::iterator& dude,
                     unordered_map<string, Table>::iterator& dude2) {
@@ -873,6 +897,7 @@ class Nincompoop {
         cout << '\n';
     }
 
+    // Generating an index
     void generate() {
         cin >> type >> name;
         auto dude = ht.find(name);
@@ -894,6 +919,7 @@ class Nincompoop {
         cout << "Created " << readString << " index for table " << name << " on column "
              << type << ", with ";
 
+        // Make sure there isn't another index
         if (dude->second.indexCol != -1) {
             if (dude->second.isBst) dude->second.bst.clear();
             else dude->second.hash.clear();
@@ -925,6 +951,7 @@ class Nincompoop {
 
     }
 
+    // Take input
     void eatInput() {
 
         do {
